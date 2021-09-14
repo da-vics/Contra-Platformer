@@ -2,7 +2,7 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(600, 600), "Contra", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(850, 700), "Contra", sf::Style::Titlebar | sf::Style::Close);
 	PagesManager pageManager(&window);
 
 	while (window.isOpen())

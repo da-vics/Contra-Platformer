@@ -1,6 +1,8 @@
 #pragma once
 
 #include "StartPage.h"
+#include"Includes/GamePlayPage.h"
+
 
 class PagesManager
 {

@@ -2,6 +2,21 @@
 
 void StartPage::setUp() {
 
+	if (!this->_bgTexture.loadFromFile("Assets/Images/ContraBackGround.jpg")) {
+		std::cout << "Error Loading Assets/Images/ContraBackGround.jpg" << std::endl;
+		std::cout << "Shutting Down!" << std::endl;
+		this->_window->close();
+	}
+
+	auto textureSize = this->_bgTexture.getSize();
+	auto WindowSize = this->_window->getSize();
+
+	auto ScaleX = (float)WindowSize.x / textureSize.x;
+	auto ScaleY = (float)WindowSize.y / textureSize.y;
+
+	this->_bgSprite.setTexture(this->_bgTexture);
+	this->_bgSprite.setScale(ScaleX, ScaleY);
+
 	this->_mainTitle.setFont(this->_HeaderFont);
 	this->_mainTitle.setString("Contra");
 	this->_mainTitle.setCharacterSize(45);

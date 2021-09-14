@@ -47,25 +47,10 @@ void BasePageClass::AlertWindow(sf::Font cFont, std::string AlertMessage, int Wx
 
 void BasePageClass::Init() {
 
-	if (!this->_HeaderFont.loadFromFile("Fonts/Handlee.ttf")) {
+	if (!this->_HeaderFont.loadFromFile("Assets/Fonts/Handlee.ttf")) {
 		std::cout << "Error Loading Fonts" << std::endl;
 		std::cout << "Shutting Down!" << std::endl;
 		this->_window->close();
 	}
-
-	if (!this->_bgTexture.loadFromFile("Images/ContraBackGround.jpg")) {
-		std::cout << "Error Loading Images/ContraBackGround.jpg" << std::endl;
-		std::cout << "Shutting Down!" << std::endl;
-		this->_window->close();
-	}
-
-	auto textureSize = this->_bgTexture.getSize();
-	auto WindowSize = this->_window->getSize();
-
-	auto ScaleX = (float)WindowSize.x / textureSize.x;
-	auto ScaleY = (float)WindowSize.y / textureSize.y;
-
-	this->_bgSprite.setTexture(this->_bgTexture);
-	this->_bgSprite.setScale(ScaleX, ScaleY);
 
 }

@@ -38,6 +38,8 @@ public:
 
 	void AlertWindow(sf::Font cFont, std::string AlertMessage, int Wx, int Wy, sf::Color bgcolor = sf::Color(138, 183, 248), sf::Color messageColor = sf::Color::Black);
 
+	virtual ~BasePageClass() {}
+
 private:
 	void Init();
 
