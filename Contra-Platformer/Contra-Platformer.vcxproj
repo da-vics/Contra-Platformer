@@ -145,7 +145,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BasePageClass.cpp" />
+    <ClCompile Include="src\PagesManager.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\StartPage.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Includes\BasePageClass.h" />
+    <ClInclude Include="src\Includes\PagesManager.h" />
+    <ClInclude Include="src\Includes\StartPage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,11 +1,9 @@
-#include<iostream>
-#include<SFML/Graphics.hpp>
+#include"Includes/PagesManager.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	sf::RenderWindow window(sf::VideoMode(600, 600), "Contra", sf::Style::Titlebar | sf::Style::Close);
+	PagesManager pageManager(&window);
 
 	while (window.isOpen())
 	{
@@ -14,10 +12,10 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-		}
 
-		window.clear();
-		window.draw(shape);
-		window.display();
+			pageManager.HandleEvents(&event);
+
+		}
+		pageManager.Display();
 	}
 }
