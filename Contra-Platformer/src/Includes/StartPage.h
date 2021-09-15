@@ -16,7 +16,7 @@ public:
 	void Display() override;
 	void HandleEvents(sf::Event*) override;
 
-	const sf::Color DarkColor = sf::Color(69, 74, 70);
+	const sf::Color DarkColor = sf::Color(135, 9, 9);
 
 private:
 	void setUp();

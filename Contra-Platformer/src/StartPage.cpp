@@ -20,7 +20,7 @@ void StartPage::setUp() {
 	this->_mainTitle.setFont(this->_HeaderFont);
 	this->_mainTitle.setString("Contra");
 	this->_mainTitle.setCharacterSize(45);
-	this->_mainTitle.setFillColor(sf::Color::Red);
+	this->_mainTitle.setFillColor(DarkColor);
 	this->_mainTitle.setPosition(sf::Vector2f(this->_window->getSize().x / 2.0f - (4.f * 45.f) / 3.f, this->_window->getSize().y / 6.5f));
 	this->_mainTitle.setStyle(sf::Text::Bold);
 
@@ -46,7 +46,7 @@ void StartPage::setUp() {
 	this->_exitButton.setPosition(sf::Vector2f(Posx, Posy));
 	this->_exitButton.setFillColor(DarkColor);
 
-	this->_exitButtonText.setFillColor(sf::Color::Red);
+	this->_exitButtonText.setFillColor(sf::Color::White);
 	this->_exitButtonText.setFont(this->_HeaderFont);
 	this->_exitButtonText.setCharacterSize(20);
 	this->_exitButtonText.setString("Quit");
