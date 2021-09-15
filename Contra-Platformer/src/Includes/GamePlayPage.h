@@ -26,5 +26,6 @@ private:
 	void setUp();
 	void updatePlayer();
 	bool GamePlay{ true };
+	void CheckCollision();
 
 };
