@@ -58,6 +58,22 @@ void GamePlayPage::CheckCollision()
 		this->mainPlayer->ResetVelocityY();
 		this->mainPlayer->SetPosition(this->mainPlayer->GetPosition().x, this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height);
 	}
+
+	auto begin = this->mainPlayer->BulletsSprites.begin();
+	auto end = this->mainPlayer->BulletsSprites.end();
+
+	for (auto iterator = begin; iterator != end;++iterator)
+	{
+		auto tempStruct = iterator->sprite;
+		auto tempBulletSprite = tempStruct;
+		if (tempBulletSprite.getPosition().x < 0 || tempBulletSprite.getPosition().x > this->_window->getSize().x)
+		{
+			this->mainPlayer->BulletsSprites.erase(iterator);
+			std::cout << mainPlayer->BulletsSprites.size() << std::endl;
+			break;
+		}
+
+	}
 }
 
 void GamePlayPage::Display()

@@ -28,6 +28,7 @@ void Player::Movement(float x, float y)
 		if (this->sprite.getPosition().x > 0)
 			this->move(-0.6f, 0.f);
 		this->movingFrame = MovingFrame::Left;
+		bulletOrientation = BulletOrientation::Left;
 	}
 
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) // Move Down
@@ -43,6 +44,29 @@ void Player::Movement(float x, float y)
 		if (bound < x)
 			this->move(0.6f, 0.f);
 		this->movingFrame = MovingFrame::Right;
+		bulletOrientation = BulletOrientation::Right;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	{
+		Sprites tempStruct;
+
+		if (this->bulletOrientation == BulletOrientation::Right)
+		{
+			tempStruct.movement = 5; tempStruct.xPosOffset = this->sprite.getGlobalBounds().width;
+		}
+
+		else
+		{
+			tempStruct.movement = -5; tempStruct.xPosOffset = 0;
+		}
+
+		sf::Sprite tempSprite;
+		tempSprite.setTexture(this->textureSheet);
+		tempSprite.setTextureRect(sf::IntRect(97, 9, 6, 6));
+		tempSprite.setPosition(this->sprite.getPosition().x + tempStruct.xPosOffset, this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height / 2) - 15);
+		tempStruct.sprite = tempSprite;
+		this->BulletsSprites.push_back(tempStruct);
 	}
 
 }
@@ -193,6 +217,16 @@ void Player::Update(float x, float y)
 void Player::Render(sf::RenderTarget* target)
 {
 	target->draw(this->sprite);
+	if (this->BulletsSprites.size() > 0)
+		for (int i = 0; i < this->BulletsSprites.size(); ++i)
+		{
+			auto tempStruct = this->BulletsSprites[i];
+			auto sprite = tempStruct.sprite;
+			sprite.setPosition((sprite.getPosition().x) + tempStruct.movement, sprite.getPosition().y);
+			target->draw(sprite);
+			tempStruct.sprite = sprite;
+			this->BulletsSprites[i] = tempStruct;
+		}
 }
 
 bool& Player::GetAnimationSwitch()

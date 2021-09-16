@@ -33,6 +33,20 @@ struct CurrentFrame
 	CurrentFrame() = default;
 };
 
+enum class BulletOrientation {
+
+	Right,
+	Left
+};
+
+
+struct Sprites
+{
+	sf::Sprite sprite;
+	int movement;
+	float xPosOffset;
+};
+
 class BasePlayer {
 
 public:
@@ -48,7 +62,8 @@ public:
 	float gravity{ 4.f };
 	float velocityMaxY{ 15.f };
 	bool animationSwitch{ true };
-	std::vector<sf::Sprite> BulletsSprites;
+
+	std::vector<Sprites> BulletsSprites;
 
 
 	virtual void Animations() {}
@@ -69,6 +84,7 @@ public:
 	virtual ~BasePlayer() {}
 
 	MovingFrame movingFrame = MovingFrame::None;
+	BulletOrientation bulletOrientation = BulletOrientation::Right;
 
 	CurrentFrame currentFrame;
 
