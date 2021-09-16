@@ -1,5 +1,6 @@
 #pragma once
 
+#include<vector>
 #include "BasePageClass.h"
 #include "Player.h"
 
@@ -22,6 +23,8 @@ public:
 
 private:
 
+	sf::Texture PlatformTexture;
+	std::vector<sf::Sprite>PlatoformSprites;
 	Player* mainPlayer;
 	void setUp();
 	void updatePlayer();

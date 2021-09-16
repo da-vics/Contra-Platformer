@@ -1,18 +1,32 @@
 #include"Includes/Player.h"
 
-void Player::Movement()
+void Player::Movement(float x, float y)
 {
 	this->movingFrame = MovingFrame::None;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))  // Move Up
 	{
-		this->move(0.f, -0.6f);
-		this->movingFrame = MovingFrame::Jump;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			this->movingFrame = MovingFrame::UpLeft;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			this->movingFrame = MovingFrame::UpRight;
+
+			auto bound = this->sprite.getPosition().x + this->sprite.getGlobalBounds().width;
+
+			if (bound < x)
+				this->move(0.6f, 0.f);
+		}
+
+		else
+			this->movingFrame = MovingFrame::Up;
 	}
 
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) // Move Left
 	{
-		this->move(-0.6f, 0.f);
+		if (this->sprite.getPosition().x > 0)
+			this->move(-0.6f, 0.f);
 		this->movingFrame = MovingFrame::Left;
 	}
 
@@ -24,14 +38,17 @@ void Player::Movement()
 
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) // Move Right
 	{
-		this->move(0.6f, 0.f);
+		auto bound = this->sprite.getPosition().x + this->sprite.getGlobalBounds().width;
+
+		if (bound < x)
+			this->move(0.6f, 0.f);
 		this->movingFrame = MovingFrame::Right;
 	}
+
 }
 
 void Player::UpdateAnimations()
 {
-
 	if (this->movingFrame == MovingFrame::None)
 	{
 		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.5f || this->GetAnimationSwitch())
@@ -48,6 +65,12 @@ void Player::UpdateAnimations()
 		}
 	}
 
+	else if (this->movingFrame == MovingFrame::Up)
+	{
+		this->sprite.setTextureRect(sf::IntRect(1, 149, 16, 35));
+		this->animationTimer.restart();
+	}
+
 	else if (this->movingFrame == MovingFrame::Right)
 	{
 		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || this->GetAnimationSwitch())
@@ -57,7 +80,28 @@ void Player::UpdateAnimations()
 			this->currentFrame.Left += 25;
 
 			if (this->currentFrame.Left >= 72)
-				this->currentFrame.Left = 0;
+				this->currentFrame.Left = 1;
+
+			this->animationTimer.restart();
+			this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
+		}
+		this->sprite.setScale(2.5f, 2.5f);
+		this->sprite.setOrigin(0, 0);
+	}
+
+	else if (this->movingFrame == MovingFrame::UpRight)
+	{
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || this->GetAnimationSwitch())
+		{
+			this->currentFrame.Top = 149;
+
+			this->currentFrame.Left += playerMove[moveIndex++];
+
+			if (this->currentFrame.Left >= 51)
+			{
+				this->currentFrame.Left = 1;
+				moveIndex = 0;
+			}
 
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
@@ -75,7 +119,7 @@ void Player::UpdateAnimations()
 			this->currentFrame.Left += 25;
 
 			if (this->currentFrame.Left >= 72)
-				this->currentFrame.Left = 0;
+				this->currentFrame.Left = 1;
 
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
@@ -139,9 +183,9 @@ sf::Vector2f Player::GetPosition() const
 	return this->sprite.getPosition();
 }
 
-void Player::Update()
+void Player::Update(float x, float y)
 {
-	this->Movement();
+	this->Movement(x, y);
 	this->UpdateAnimations();
 	this->UpdatePhysics();
 }

@@ -1,12 +1,16 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include<vector>
 
 enum class MovingFrame {
 
 	None,
 	Left,
 	Right,
+	UpLeft,
+	UpRight,
+	Up,
 	Jump,
 	Down
 };
@@ -44,11 +48,13 @@ public:
 	float gravity{ 4.f };
 	float velocityMaxY{ 15.f };
 	bool animationSwitch{ true };
+	std::vector<sf::Sprite> BulletsSprites;
+
 
 	virtual void Animations() {}
 	virtual void UpdateAnimations() {}
-	virtual void Movement() {}
-	virtual void Update() {}
+	virtual void Movement(float x, float y) {}
+	virtual void Update(float x, float y) {}
 	virtual void UpdatePhysics() {}
 	virtual void move(const float dir_x, const float dir_y) {}
 	virtual void Render(sf::RenderTarget* target) {}
@@ -58,6 +64,7 @@ public:
 	virtual sf::Vector2f GetPosition() const = 0;
 	virtual void ResetVelocityY() {};
 	virtual void SetPosition(const float x, const float y) {};
+
 
 	virtual ~BasePlayer() {}
 

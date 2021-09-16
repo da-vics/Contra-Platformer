@@ -2,7 +2,7 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(850, 600), "Contra", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(900, 600), "Contra", sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
 	PagesManager pageManager(&window);
 
