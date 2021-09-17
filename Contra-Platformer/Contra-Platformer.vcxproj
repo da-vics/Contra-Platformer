@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\BasePlayer.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\GamePlayPage.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="src\StartPage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Includes\Enemy.h" />
     <ClInclude Include="src\Includes\BasePlayer.h" />
     <ClInclude Include="src\Includes\Player.h" />
     <ClInclude Include="src\Includes\GamePlayPage.h" />

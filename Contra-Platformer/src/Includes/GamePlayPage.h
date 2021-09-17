@@ -3,6 +3,7 @@
 #include<vector>
 #include "BasePageClass.h"
 #include "Player.h"
+#include"Enemy.h"
 
 class GamePlayPage : public BasePageClass
 {
@@ -25,6 +26,7 @@ private:
 
 	sf::Texture PlatformTexture;
 	std::vector<sf::Sprite>PlatoformSprites;
+	std::vector <Enemy> Enemies;
 	Player* mainPlayer;
 	void setUp();
 	void updatePlayer();
@@ -36,5 +38,6 @@ private:
 	int score{ 0 };
 
 	sf::Color HpColor = sf::Color(19, 224, 16);
+
 
 };

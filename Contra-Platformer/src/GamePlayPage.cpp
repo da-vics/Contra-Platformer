@@ -20,6 +20,15 @@ void GamePlayPage::setUp()
 		this->_window->close();
 	}
 
+	if (this->Enemies.size() != 1)
+	{
+		sf::Vector2f tempPos;
+		tempPos.y = this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height;
+		tempPos.x = this->_window->getSize().x - this->mainPlayer->GetGlobalBounds().width;
+
+		this->Enemies.push_back(Enemy(tempPos, MovingFrame::Right, " ", &(this->mainPlayer->sprite)));
+	}
+
 	this->Score.setFont(this->_HeaderFont);
 	this->Score.setPosition(5, 10);
 	this->Score.setCharacterSize(15);
@@ -72,6 +81,8 @@ void GamePlayPage::updatePlayer()
 
 void GamePlayPage::CheckCollision()
 {
+	for (auto& enemy : this->Enemies)
+		enemy.Shoot();
 
 	if (this->mainPlayer->onGround == false)
 	{
@@ -79,9 +90,6 @@ void GamePlayPage::CheckCollision()
 		if (this->mainPlayer->velocity.y > this->mainPlayer->velocityMaxY)
 			this->mainPlayer->velocity.y = this->mainPlayer->velocityMaxY;
 	}
-
-
-
 
 	if (this->mainPlayer->GetPosition().x >= this->PlatoformSprites[0].getPosition().x and
 		this->mainPlayer->GetPosition().x <= this->PlatoformSprites[0].getPosition().x + this->PlatoformSprites[0].getGlobalBounds().width and
@@ -109,12 +117,57 @@ void GamePlayPage::CheckCollision()
 	{
 		auto tempStruct = iterator->sprite;
 		auto tempBulletSprite = tempStruct;
+
+		bool found = false;
+
+		auto Ebegin = this->Enemies.begin();
+		auto Eend = this->Enemies.end();
+
+		for (auto Eiterator = Ebegin; Eiterator != Eend; ++Eiterator)
+		{
+			if (tempBulletSprite.getGlobalBounds().intersects(Eiterator->sprite.getGlobalBounds()))
+			{
+				Eiterator->Health -= 1;
+
+				if (Eiterator->Health <= 0)
+				{
+					this->Enemies.erase(Eiterator);
+					this->score += 2;
+					this->Score.setString("Score: " + std::to_string(this->score));
+				}
+
+				this->mainPlayer->BulletsSprites.erase(iterator);
+				found = true;
+				break;
+			}
+		}
+
+		if (found)
+			break;
+
 		if (tempBulletSprite.getPosition().x < 0 or tempBulletSprite.getPosition().x > this->_window->getSize().x)
 		{
 			this->mainPlayer->BulletsSprites.erase(iterator);
 			break;
 		}
 	}
+
+	for (int i = 0; i < this->Enemies.size(); ++i)
+	{
+		auto begin = this->Enemies[i].BulletsSprites.begin();
+		auto end = this->Enemies[i].BulletsSprites.end();
+
+		for (auto iterator = begin; iterator != end;++iterator)
+		{
+			auto tempStruct = iterator->sprite;
+			auto tempBulletSprite = tempStruct;
+			if (tempBulletSprite.getPosition().x < 0 or tempBulletSprite.getPosition().x > this->_window->getSize().x)
+			{
+				this->Enemies[i].BulletsSprites.erase(iterator);
+				break;
+			}
+		}
+	}//
 }
 
 void GamePlayPage::Display()
@@ -131,6 +184,9 @@ void GamePlayPage::Display()
 	for (auto sprite : this->PlatoformSprites)
 		this->_window->draw(sprite);
 
+	for (auto& enemy : this->Enemies)
+		enemy.Render(this->_window);
+
 	this->mainPlayer->Render(this->_window);
 
 	this->_window->display();
@@ -146,6 +202,18 @@ void GamePlayPage::HandleEvents(sf::Event* event)
 		{
 			this->ChangePage = true;
 			this->NavTOPage = GamePages::StartPage;
+		}
+
+		if (this->mainPlayer->sprite.getPosition().x > 100)
+		{
+			if (this->Enemies.size() == 1 && Enemies[0].movingFrame == MovingFrame::Right)
+			{
+				sf::Vector2f tempPos;
+				tempPos.y = this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height;
+				tempPos.x = this->mainPlayer->GetGlobalBounds().width;
+
+				this->Enemies.push_back(Enemy(tempPos, MovingFrame::Left, " ", &(this->mainPlayer->sprite)));
+			}
 		}
 	}
 

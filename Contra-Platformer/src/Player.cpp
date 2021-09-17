@@ -6,21 +6,20 @@ void Player::Movement(float x, float y)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) or sf::Keyboard::isKeyPressed(sf::Keyboard::Up))  // Move Up
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) or sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			this->movingFrame = MovingFrame::UpLeft;
+		/*	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) or sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				this->movingFrame = MovingFrame::UpLeft;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) or sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			this->movingFrame = MovingFrame::UpRight;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) or sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				this->movingFrame = MovingFrame::UpRight;
 
-			auto bound = this->sprite.getPosition().x + this->sprite.getGlobalBounds().width;
+				auto bound = this->sprite.getPosition().x + this->sprite.getGlobalBounds().width;
 
-			if (bound < x)
-				this->move(0.6f, 0.f);
-		}
+				if (bound < x)
+					this->move(0.6f, 0.f);
+			}*/
 
-		else
-			this->movingFrame = MovingFrame::Up;
+		this->movingFrame = MovingFrame::Up;
 	}
 
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) or sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) // Move Left
@@ -33,7 +32,8 @@ void Player::Movement(float x, float y)
 
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) or sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) // Move Down
 	{
-		this->move(0.f, 0.6f);
+		this->sprite.setTextureRect(sf::IntRect(79, 25, 32, 16));
+		this->sprite.setPosition(this->sprite.getPosition().x, 600);
 		this->movingFrame = MovingFrame::Down;
 	}
 
@@ -47,7 +47,7 @@ void Player::Movement(float x, float y)
 		bulletOrientation = BulletOrientation::Right;
 	}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) // Jump
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) // Jump
 	{
 		if (this->onGround == true && canJump)
 		{
@@ -74,7 +74,10 @@ void Player::Movement(float x, float y)
 		sf::Sprite tempSprite;
 		tempSprite.setTexture(this->textureSheet);
 		tempSprite.setTextureRect(sf::IntRect(97, 9, 6, 6));
-		tempSprite.setPosition(this->sprite.getPosition().x + tempStruct.xPosOffset, this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height / 2) - 15);
+		if (this->movingFrame != MovingFrame::Down)
+			tempSprite.setPosition(this->sprite.getPosition().x + tempStruct.xPosOffset, this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height / 2) - 15);
+		else
+			tempSprite.setPosition(this->sprite.getPosition().x + tempStruct.xPosOffset, 575);
 		tempStruct.sprite = tempSprite;
 		this->BulletsSprites.push_back(tempStruct);
 		this->GameSound.play();
@@ -124,26 +127,26 @@ void Player::UpdateAnimations()
 		this->sprite.setOrigin(0, 0);
 	}
 
-	else if (this->movingFrame == MovingFrame::UpRight)
-	{
-		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f or this->GetAnimationSwitch())
-		{
-			this->currentFrame.Top = 149;
+	//else if (this->movingFrame == MovingFrame::UpRight)
+	//{
+	//	if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f or this->GetAnimationSwitch())
+	//	{
+	//		this->currentFrame.Top = 149;
 
-			this->currentFrame.Left += playerMove[moveIndex++];
+	//		this->currentFrame.Left += playerMove[moveIndex++];
 
-			if (this->currentFrame.Left >= 51)
-			{
-				this->currentFrame.Left = 1;
-				moveIndex = 0;
-			}
+	//		if (this->currentFrame.Left >= 51)
+	//		{
+	//			this->currentFrame.Left = 1;
+	//			moveIndex = 0;
+	//		}
 
-			this->animationTimer.restart();
-			this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
-		}
-		this->sprite.setScale(2.5f, 2.5f);
-		this->sprite.setOrigin(0, 0);
-	}
+	//		this->animationTimer.restart();
+	//		this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
+	//	}
+	//	this->sprite.setScale(2.5f, 2.5f);
+	//	this->sprite.setOrigin(0, 0);
+	//}
 
 	else if (this->movingFrame == MovingFrame::Left)
 	{
@@ -234,7 +237,7 @@ void Player::Render(sf::RenderTarget* target)
 		}
 }
 
-bool& Player::GetAnimationSwitch()
+bool Player::GetAnimationSwitch()
 {
 	bool temp = this->animationSwitch;
 

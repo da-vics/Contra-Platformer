@@ -10,7 +10,10 @@ public:
 
 	Player()
 	{
-		this->textureSheet.loadFromFile("Assets/Images/ContraSheet.png");
+		if (!this->textureSheet.loadFromFile("Assets/Images/ContraSheet.png"))
+		{
+			std::cout << "error" << std::endl;
+		}
 		this->sprite.setTexture(this->textureSheet);
 		this->currentFrame = CurrentFrame(1, 8, 24, 35);
 		this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
@@ -32,7 +35,7 @@ public:
 
 	virtual void Update(float x, float y) override;
 	virtual void Render(sf::RenderTarget* target) override;
-	virtual bool& GetAnimationSwitch() override;
+	virtual bool GetAnimationSwitch() override;
 	virtual void ResetAnimationTimer();
 	virtual sf::FloatRect GetGlobalBounds() const override;
 	virtual void ResetVelocityY() override;
