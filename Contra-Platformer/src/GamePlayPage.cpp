@@ -1,4 +1,5 @@
 #include "Includes/GamePlayPage.h"
+#include <string>
 
 void GamePlayPage::setUp()
 {
@@ -19,19 +20,37 @@ void GamePlayPage::setUp()
 		this->_window->close();
 	}
 
+	this->Score.setFont(this->_HeaderFont);
+	this->Score.setPosition(5, 10);
+	this->Score.setCharacterSize(15);
+	this->Score.setString("Score: " + std::to_string(this->score));
+	this->Score.setStyle(sf::Text::Bold);
+	this->Score.setFillColor(sf::Color(18, 20, 128));
+
+	this->Hp.setFont(this->_HeaderFont);
+	this->Hp.setPosition(5, 35);
+	this->Hp.setCharacterSize(15);
+	this->Hp.setString("HP: ");
+	this->Hp.setStyle(sf::Text::Bold);
+	this->Hp.setFillColor(HpColor);
+
+	this->HealthBar.setPosition(35, 35);
+	this->HealthBar.setSize(sf::Vector2f(this->mainPlayer->Health * 2.f, 20.f));
+	this->HealthBar.setFillColor(HpColor);
+
 	sf::Sprite tempSprite;
 
 	tempSprite.setTexture(this->PlatformTexture);
 	tempSprite.setTextureRect(sf::IntRect(86, 349, 426, 82));
-	tempSprite.setPosition(10, 400);
+	tempSprite.setPosition(5, 430);
 	this->PlatoformSprites.push_back(tempSprite);
 
 	tempSprite.setTextureRect(sf::IntRect(445, 244, 61, 96));
-	tempSprite.setPosition(400, this->_window->getSize().y - tempSprite.getGlobalBounds().height);
+	tempSprite.setPosition(450, this->_window->getSize().y - tempSprite.getGlobalBounds().height);
 	this->PlatoformSprites.push_back(tempSprite);
 
 	tempSprite.setTextureRect(sf::IntRect(83, 265, 331, 83));
-	tempSprite.setPosition(500, 200);
+	tempSprite.setPosition(500, 300);
 	this->PlatoformSprites.push_back(tempSprite);
 
 
@@ -53,8 +72,32 @@ void GamePlayPage::updatePlayer()
 
 void GamePlayPage::CheckCollision()
 {
+
+	if (this->mainPlayer->onGround == false)
+	{
+		this->mainPlayer->velocity.y += this->mainPlayer->gravity * 250.f;
+		if (this->mainPlayer->velocity.y > this->mainPlayer->velocityMaxY)
+			this->mainPlayer->velocity.y = this->mainPlayer->velocityMaxY;
+	}
+
+
+
+
+	if (this->mainPlayer->GetPosition().x >= this->PlatoformSprites[0].getPosition().x and
+		this->mainPlayer->GetPosition().x <= this->PlatoformSprites[0].getPosition().x + this->PlatoformSprites[0].getGlobalBounds().width and
+		(int)this->mainPlayer->GetPosition().y == (int)this->PlatoformSprites[0].getPosition().y + this->PlatoformSprites[0].getGlobalBounds().height)
+	{
+		this->mainPlayer->canJump = false;
+	}
+
+	else
+		this->mainPlayer->canJump = true;
+
+
 	if (this->mainPlayer->GetPosition().y + this->mainPlayer->GetGlobalBounds().height > this->_window->getSize().y)
 	{
+		this->mainPlayer->velocity.y = 0;
+		this->mainPlayer->onGround = true;
 		this->mainPlayer->ResetVelocityY();
 		this->mainPlayer->SetPosition(this->mainPlayer->GetPosition().x, this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height);
 	}
@@ -66,13 +109,11 @@ void GamePlayPage::CheckCollision()
 	{
 		auto tempStruct = iterator->sprite;
 		auto tempBulletSprite = tempStruct;
-		if (tempBulletSprite.getPosition().x < 0 || tempBulletSprite.getPosition().x > this->_window->getSize().x)
+		if (tempBulletSprite.getPosition().x < 0 or tempBulletSprite.getPosition().x > this->_window->getSize().x)
 		{
 			this->mainPlayer->BulletsSprites.erase(iterator);
-			std::cout << mainPlayer->BulletsSprites.size() << std::endl;
 			break;
 		}
-
 	}
 }
 
@@ -81,6 +122,11 @@ void GamePlayPage::Display()
 	this->_window->clear();
 
 	this->_window->draw(this->_bgSprite);
+
+	this->_window->draw(this->Score);
+
+	this->_window->draw(this->Hp);
+	this->_window->draw(HealthBar);
 
 	for (auto sprite : this->PlatoformSprites)
 		this->_window->draw(sprite);
@@ -103,11 +149,12 @@ void GamePlayPage::HandleEvents(sf::Event* event)
 		}
 	}
 
-	if (event->type == sf::Event::KeyReleased && (
-		event->key.code == sf::Keyboard::A ||
-		event->key.code == sf::Keyboard::D ||
-		event->key.code == sf::Keyboard::W ||
-		event->key.code == sf::Keyboard::S))
+	if (event->type == sf::Event::KeyReleased and (
+		event->key.code == sf::Keyboard::A or
+		event->key.code == sf::Keyboard::D or
+		event->key.code == sf::Keyboard::W or
+		event->key.code == sf::Keyboard::S or
+		event->key.code == sf::Keyboard::Space))
 	{
 		this->mainPlayer->ResetAnimationTimer();
 	}

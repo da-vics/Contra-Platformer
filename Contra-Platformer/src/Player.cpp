@@ -4,12 +4,12 @@ void Player::Movement(float x, float y)
 {
 	this->movingFrame = MovingFrame::None;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))  // Move Up
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) or sf::Keyboard::isKeyPressed(sf::Keyboard::Up))  // Move Up
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) or sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			this->movingFrame = MovingFrame::UpLeft;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) or sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			this->movingFrame = MovingFrame::UpRight;
 
@@ -23,7 +23,7 @@ void Player::Movement(float x, float y)
 			this->movingFrame = MovingFrame::Up;
 	}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) // Move Left
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) or sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) // Move Left
 	{
 		if (this->sprite.getPosition().x > 0)
 			this->move(-0.6f, 0.f);
@@ -31,13 +31,13 @@ void Player::Movement(float x, float y)
 		bulletOrientation = BulletOrientation::Left;
 	}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) // Move Down
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) or sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) // Move Down
 	{
 		this->move(0.f, 0.6f);
 		this->movingFrame = MovingFrame::Down;
 	}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) // Move Right
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) or sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) // Move Right
 	{
 		auto bound = this->sprite.getPosition().x + this->sprite.getGlobalBounds().width;
 
@@ -47,7 +47,17 @@ void Player::Movement(float x, float y)
 		bulletOrientation = BulletOrientation::Right;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) // Jump
+	{
+		if (this->onGround == true && canJump)
+		{
+			this->velocity.y = -250.f;
+			this->movingFrame = MovingFrame::Jump;
+			this->onGround = false;
+		}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) // Shoot
 	{
 		Sprites tempStruct;
 
@@ -67,6 +77,7 @@ void Player::Movement(float x, float y)
 		tempSprite.setPosition(this->sprite.getPosition().x + tempStruct.xPosOffset, this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height / 2) - 15);
 		tempStruct.sprite = tempSprite;
 		this->BulletsSprites.push_back(tempStruct);
+		this->GameSound.play();
 	}
 
 }
@@ -75,7 +86,7 @@ void Player::UpdateAnimations()
 {
 	if (this->movingFrame == MovingFrame::None)
 	{
-		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.5f || this->GetAnimationSwitch())
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.5f or this->GetAnimationSwitch())
 		{
 			this->currentFrame.Top = 8;
 
@@ -97,7 +108,7 @@ void Player::UpdateAnimations()
 
 	else if (this->movingFrame == MovingFrame::Right)
 	{
-		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || this->GetAnimationSwitch())
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f or this->GetAnimationSwitch())
 		{
 			this->currentFrame.Top = 79;
 
@@ -115,7 +126,7 @@ void Player::UpdateAnimations()
 
 	else if (this->movingFrame == MovingFrame::UpRight)
 	{
-		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || this->GetAnimationSwitch())
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f or this->GetAnimationSwitch())
 		{
 			this->currentFrame.Top = 149;
 
@@ -136,7 +147,7 @@ void Player::UpdateAnimations()
 
 	else if (this->movingFrame == MovingFrame::Left)
 	{
-		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || this->GetAnimationSwitch())
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f or this->GetAnimationSwitch())
 		{
 			this->currentFrame.Top = 79;
 
@@ -163,18 +174,12 @@ void Player::UpdatePhysics()
 
 	if (std::abs(this->velocity.x) < this->velocityMin)
 		this->velocity.x = 0.f;
-	if (std::abs(this->velocity.y) < this->velocityMin)
-		this->velocity.y = 0.f;
 
 	this->sprite.move(this->velocity);
 }
 
 void Player::move(const float dir_x, const float dir_y)
 {
-	this->velocity.y += 1.0 * this->gravity;
-	if (std::abs(this->velocity.y) > this->velocityMaxY)
-		this->velocity.y = this->maxVelocity * ((this->velocity.y < 0.f) ? -1.f : 1.f);
-
 	this->velocity.x += dir_x * this->acceleration;
 
 	if (std::abs(this->velocity.x) > this->maxVelocity)

@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include <SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 
 enum class GamePages
 {
@@ -27,6 +28,9 @@ public:
 	sf::Texture _bgTexture;
 	sf::Sprite _bgSprite;
 	sf::Font _HeaderFont;
+
+	sf::SoundBuffer soundBuffer;
+	sf::Sound GameSound;
 
 	std::string _pageID{ " " };
 	bool ChangePage{ false };

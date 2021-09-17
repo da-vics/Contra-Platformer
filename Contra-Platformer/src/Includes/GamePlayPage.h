@@ -30,5 +30,11 @@ private:
 	void updatePlayer();
 	bool GamePlay{ true };
 	void CheckCollision();
+	sf::Text Score;
+	sf::Text Hp;
+	sf::RectangleShape HealthBar;
+	int score{ 0 };
+
+	sf::Color HpColor = sf::Color(19, 224, 16);
 
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include"BasePlayer.h"
+#include<iostream>
 
 class Player :public BasePlayer
 {
@@ -20,6 +21,13 @@ public:
 		this->acceleration = 3.f;
 		this->drag = 0.65f;
 		this->velocityMin = 1.f;
+
+		if (!this->soundBuffer.loadFromFile("Assets/Audio/shootGun.wav")) {
+			std::cout << "Error Loading Assets/Audio/shootGun.wav" << std::endl;
+		}
+
+		this->GameSound.setBuffer(this->soundBuffer);
+		this->GameSound.setVolume(50);
 	}
 
 	virtual void Update(float x, float y) override;

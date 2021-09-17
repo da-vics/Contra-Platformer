@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include<vector>
+#include<SFML/Audio.hpp>
 
 enum class MovingFrame {
 
@@ -53,16 +54,20 @@ public:
 	sf::Texture	textureSheet;
 	sf::Sprite sprite;
 	sf::Clock animationTimer;
-
+	sf::SoundBuffer soundBuffer;
+	sf::Sound GameSound;
 	sf::Vector2f velocity;
+
+	int Health{ 100 };
 	float acceleration{ 0 };
 	float drag{ 0 };
 	float velocityMin{ 0 };
 	float maxVelocity{ 15.f };
-	float gravity{ 4.f };
-	float velocityMaxY{ 15.f };
+	float gravity{ 0.5f };
+	float velocityMaxY{ 5.f };
+	float onGround{ true };
 	bool animationSwitch{ true };
-
+	bool canJump{ false };
 	std::vector<Sprites> BulletsSprites;
 
 
