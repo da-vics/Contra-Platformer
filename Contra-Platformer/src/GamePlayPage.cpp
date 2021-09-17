@@ -20,11 +20,13 @@ void GamePlayPage::setUp()
 		this->_window->close();
 	}
 
+	this->PlayerHeight = this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height;
+
 	if (this->Enemies.size() != 1)
 	{
 		sf::Vector2f tempPos;
-		tempPos.y = this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height;
-		tempPos.x = this->_window->getSize().x - this->mainPlayer->GetGlobalBounds().width;
+		tempPos.y = this->PlayerHeight;
+		tempPos.x = 840;
 
 		this->Enemies.push_back(Enemy(tempPos, MovingFrame::Right, " ", &(this->mainPlayer->sprite)));
 	}
@@ -77,6 +79,33 @@ void GamePlayPage::updatePlayer()
 {
 	this->mainPlayer->Update(this->_window->getSize().x, this->_window->getSize().y);
 	this->CheckCollision();
+	for (auto& enemy : this->Enemies)
+	{
+		enemy.Movement(0, 0);
+	}
+
+
+	if (this->Enemies.size() == 1 && Enemies[0].movingFrame == MovingFrame::Right)
+	{
+		if (this->mainPlayer->sprite.getPosition().x > 100)
+		{
+			sf::Vector2f tempPos;
+			tempPos.y = this->PlayerHeight;
+			tempPos.x = 20;
+			this->Enemies.push_back(Enemy(tempPos, MovingFrame::Left, " ", &(this->mainPlayer->sprite)));
+		}
+	}
+
+	else if (this->Enemies.size() == 1 && Enemies[0].movingFrame == MovingFrame::Left)
+	{
+		if (this->mainPlayer->sprite.getPosition().x < 840)
+		{
+			sf::Vector2f tempPos;
+			tempPos.y = this->PlayerHeight;
+			tempPos.x = 840;
+			this->Enemies.push_back(Enemy(tempPos, MovingFrame::Right, " ", &(this->mainPlayer->sprite)));
+		}
+	}
 }
 
 void GamePlayPage::CheckCollision()
@@ -161,7 +190,32 @@ void GamePlayPage::CheckCollision()
 		{
 			auto tempStruct = iterator->sprite;
 			auto tempBulletSprite = tempStruct;
-			if (tempBulletSprite.getPosition().x < 0 or tempBulletSprite.getPosition().x > this->_window->getSize().x)
+
+			if (tempBulletSprite.getGlobalBounds().intersects(this->mainPlayer->GetGlobalBounds()))
+			{
+				this->mainPlayer->Health -= 1;
+				this->HealthBar.setSize(sf::Vector2f(this->mainPlayer->Health * 2.f, 20.f));
+				if (this->mainPlayer->Health <= 70)
+				{
+					this->HealthBar.setFillColor(sf::Color(135, 9, 9));
+					this->Hp.setFillColor(sf::Color(135, 9, 9));
+				}
+				this->Enemies[i].BulletsSprites.erase(iterator);
+				if (this->mainPlayer->Health <= 0)
+				{
+					this->GamePlay = false;
+
+					GameOver.setFont(this->_HeaderFont);
+					GameOver.setPosition((this->_window->getSize().x / 2) - 130, this->_window->getSize().y / 2);
+					GameOver.setCharacterSize(30);
+					GameOver.setString("Game Over.. Press <-");
+					GameOver.setStyle(sf::Text::Bold);
+					GameOver.setFillColor(sf::Color(135, 9, 9));
+				}
+				break;
+			}
+
+			else if (tempBulletSprite.getPosition().x < 0 or tempBulletSprite.getPosition().x > this->_window->getSize().x)
 			{
 				this->Enemies[i].BulletsSprites.erase(iterator);
 				break;
@@ -172,26 +226,36 @@ void GamePlayPage::CheckCollision()
 
 void GamePlayPage::Display()
 {
-	this->_window->clear();
+	if (this->GamePlay)
+	{
+		this->_window->clear();
 
-	this->_window->draw(this->_bgSprite);
+		this->_window->draw(this->_bgSprite);
 
-	this->_window->draw(this->Score);
+		this->_window->draw(this->Score);
 
-	this->_window->draw(this->Hp);
-	this->_window->draw(HealthBar);
+		this->_window->draw(this->Hp);
+		this->_window->draw(HealthBar);
 
-	for (auto sprite : this->PlatoformSprites)
-		this->_window->draw(sprite);
+		for (auto sprite : this->PlatoformSprites)
+			this->_window->draw(sprite);
 
-	for (auto& enemy : this->Enemies)
-		enemy.Render(this->_window);
+		for (auto& enemy : this->Enemies)
+			enemy.Render(this->_window);
 
-	this->mainPlayer->Render(this->_window);
+		this->mainPlayer->Render(this->_window);
 
-	this->_window->display();
+		this->_window->display();
 
-	this->updatePlayer();
+		this->updatePlayer();
+	}
+
+	else
+	{
+		this->_window->draw(GameOver);
+		this->_window->display();
+	}
+
 }
 
 void GamePlayPage::HandleEvents(sf::Event* event)
@@ -202,18 +266,6 @@ void GamePlayPage::HandleEvents(sf::Event* event)
 		{
 			this->ChangePage = true;
 			this->NavTOPage = GamePages::StartPage;
-		}
-
-		if (this->mainPlayer->sprite.getPosition().x > 100)
-		{
-			if (this->Enemies.size() == 1 && Enemies[0].movingFrame == MovingFrame::Right)
-			{
-				sf::Vector2f tempPos;
-				tempPos.y = this->_window->getSize().y - this->mainPlayer->GetGlobalBounds().height;
-				tempPos.x = this->mainPlayer->GetGlobalBounds().width;
-
-				this->Enemies.push_back(Enemy(tempPos, MovingFrame::Left, " ", &(this->mainPlayer->sprite)));
-			}
 		}
 	}
 

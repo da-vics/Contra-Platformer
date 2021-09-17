@@ -58,7 +58,7 @@ public:
 	sf::Sound GameSound;
 	sf::Vector2f velocity;
 
-	int Health{ 100 };
+	int Health{ 200 };
 	float acceleration{ 0 };
 	float drag{ 0 };
 	float velocityMin{ 0 };

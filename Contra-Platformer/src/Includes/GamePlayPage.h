@@ -34,9 +34,10 @@ private:
 	void CheckCollision();
 	sf::Text Score;
 	sf::Text Hp;
+	sf::Text GameOver;
 	sf::RectangleShape HealthBar;
 	int score{ 0 };
-
+	int PlayerHeight{ 0 };
 	sf::Color HpColor = sf::Color(19, 224, 16);
 
 

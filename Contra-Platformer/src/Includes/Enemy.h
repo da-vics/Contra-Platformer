@@ -19,6 +19,14 @@ public:
 		this->currentFrame = CurrentFrame(209, 79, 24, 35);
 		this->sprite.setTextureRect(sf::IntRect(currentFrame.Left, currentFrame.Top, currentFrame.Width, currentFrame.Height));
 		this->sprite.setScale(2.5f, 2.5f);
+		xPos = pos.x;
+
+		if (mFrame == MovingFrame::Left)
+			pos.x = -50;
+
+		if (mFrame == MovingFrame::Right)
+			pos.x = 960;
+
 		this->sprite.setPosition(pos);
 
 		this->animationTimer.restart();
@@ -26,7 +34,7 @@ public:
 		this->acceleration = 3.f;
 		this->drag = 0.65f;
 		this->velocityMin = 1.f;
-		this->Health = 100;
+		this->Health = 150;
 
 		if (mFrame == MovingFrame::Left)
 		{
@@ -45,7 +53,10 @@ public:
 		this->movingFrame = mFrame;
 	}
 
+	int xPos = 0;
+	virtual void Movement(float x, float y) override;
 	void Shoot();
+	bool canShoot = false;
 	virtual void Render(sf::RenderTarget* target) override;
 	virtual bool GetAnimationSwitch() override;
 	virtual sf::FloatRect GetGlobalBounds() const override;
